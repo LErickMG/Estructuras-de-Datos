@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import mx.unam.ciencias.edd.Lista;
 
@@ -40,9 +41,10 @@ public class FormatoEntrada {
      */  
     public void entrada(String[] args) {
 
+        // Verificamos si en los argumentos hay archivos de entrada y en caso de que sí procedemos a insertarlos en texto.
         Lista<String> texto = new Lista<>();
-
-        for(int i = 0; i < args.length; i++){
+        boolean hayEntrada = false;
+        for(int i = 0; i < args.length; i++){   
                 
             if(esBanderaR(args[i]))
                 banderaR = true;
@@ -57,7 +59,30 @@ public class FormatoEntrada {
                 } 
             }
             else {
+                hayEntrada = true;
                 agregaArchivo(args[i]);
+            }
+        }
+        //En caso de no haber tenido archivo de entrada leemos desde la consola
+        if(!hayEntrada){
+            entradaEstandar(); 
+        }
+
+    }
+
+    /**
+     * Agrega los elementos desde entrada estándar
+     */
+    private void entradaEstandar(){
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String cad;
+        boolean hayLinea = true;
+        while(hayLinea){
+            try{
+                cad = reader.readLine();
+            }
+            catch(Exception e){
+                hayLinea = false;
             }
         }
     }
@@ -66,7 +91,7 @@ public class FormatoEntrada {
      * Agrega los elementos de un archivo dada su dirección.
      * @param dir La dirección del archivo.
      */
-    public void agregaArchivo(String dir){
+    private void agregaArchivo(String dir){
 
         BufferedReader reader;
         try{
@@ -100,19 +125,22 @@ public class FormatoEntrada {
     private boolean esBanderaO(String s){
         return (s.equals("-o"));
     }
-
+    /** Regresa la lista con nuestro texto */
     public Lista<String> getTexto(){
         return texto;
     }
 
+    /** Verifica si hay archivo de salida*/
     public boolean haySalida(){
         return (salida != null);
-    }
+    }   
 
+    /** Obtenemos la dirección del archivo de salida */
     public String getSalida(){
         return salida;
     }
 
+    /** Revisa si la bandera de reversa está activada */
     public boolean hayReversa(){
         return banderaR;
     }
